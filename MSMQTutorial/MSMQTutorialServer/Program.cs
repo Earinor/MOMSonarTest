@@ -85,7 +85,7 @@ namespace MSMQTutorialServer
                         case Command.Users:
                             string userList = String.Join(",", users);
                             MessageObject userMsg = new MessageObject();
-                            userMsg.Username = "System";
+                            userMsg.Username= "System";
                             userMsg.Message = userList;
                             userMsg.Command = Command.Users;
                             Send(msgObject.Username, userMsg);

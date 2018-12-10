@@ -1,4 +1,4 @@
-„B
+ÚB
 Mc:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\MSMQTutorialServer\Program.cs
 	namespace 	
 MSMQTutorialServer
@@ -367,11 +367,12 @@ ToUsernamePP/ 9
 finallydd 
 {ee 
 publicQueuejj 
-.jj 
-Disposejj #
-(jj# $
-)jj$ %
-;jj% &
+?jj 
+.jj 
+Disposejj $
+(jj$ %
+)jj% &
+;jj& '
 }kk 
 }ll 	
 privatess 

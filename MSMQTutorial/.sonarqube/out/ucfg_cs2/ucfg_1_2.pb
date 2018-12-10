@@ -511,17 +511,23 @@ Mc:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\MSMQTutorialServer\Program.cs@
 1
 21*	
 1*
-22*¬
-22Ÿ
+22*
+22*
+23
+24*¬
+24Ÿ
 œ
 W
-Mc:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\MSMQTutorialServer\Program.csj j(%
+Mc:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\MSMQTutorialServer\Program.csj j(&
 %52")System.ComponentModel.Component.Dispose()*
 
 publicQueue*
-23*
+23*
+21*
+23
+25*
 
-21*
+25*
 23*
 23"
 ""
