@@ -1,0 +1,10 @@
+O
+Mc:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\ClientApplication\App.xaml.csL
+Jc:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\ClientApplication\Logic.csV
+Tc:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\ClientApplication\MainWindow.xaml.cs^
+\c:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\ClientApplication\Properties\AssemblyInfo.csf
+bc:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\ClientApplication\Properties\Resources.Designer.cse
+ac:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\ClientApplication\Properties\Settings.Designer.cs_
+[c:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\ClientApplication\obj\Debug\MainWindow.g.csX
+Tc:\Users\jafu\Source\Repos\NewRepo\MSMQTutorial\ClientApplication\obj\Debug\App.g.csW
+SC:\Users\jafu\AppData\Local\Temp\.NETFramework,Version=v4.6.1.AssemblyAttributes.cs

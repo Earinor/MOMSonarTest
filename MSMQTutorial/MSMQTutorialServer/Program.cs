@@ -103,7 +103,7 @@ namespace MSMQTutorialServer
                 //you could also use Purge() here to clear the contents of the queue
                 //but this way, when the server is started again, it can't continue with
                 //the messages it had stored.
-                publicQueue.Dispose();
+                publicQueue?.Dispose();
             }
         }
 

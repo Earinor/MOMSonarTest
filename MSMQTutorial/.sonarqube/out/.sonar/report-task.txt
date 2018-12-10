@@ -1,0 +1,7 @@
+organization=earinor-github
+projectKey=Earinor_MOMSonarTest
+serverUrl=https://sonarcloud.io
+serverVersion=7.5.0.19741
+dashboardUrl=https://sonarcloud.io/dashboard?id=Earinor_MOMSonarTest
+ceTaskId=AWeX4DC__dks3zB7O_iy
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AWeX4DC__dks3zB7O_iy
