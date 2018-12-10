@@ -1,0 +1,132 @@
+/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\
+| ------------------------------ SVE02 Exercise 01: Chatboard with MSMQ ------------------------------------- |
+\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~by~Fux~and~Huber~~~~~~~~~~~~~~/
+
+-> 1 DESCRIPTION +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
+
+This project was built in the context of the Service Engineering class of the masters degree Software 
+Engineering of the university of applied science Hagenberg and is aimed to demonstrate a simple usecase
+of MSMQ in a local server client application.
+
+The application consists of major parts:
+- a client application with a GUI that sends different messages on a publicly known server queue and listens
+  to messages on a only server known private queue
+- a server application that listens to messages on the public queue and processes or redirects those
+
+This allows for both public and private conversations between clients and should demonstrate different 
+aspects of queue communication.
+
+\----DESCRIPTION----------------------------------------------------------------------------------------------/
+
+
+-> 2 MSMQ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
+
+MSMQ is a queuing technology built by Microsoft which is preinstalled on Windows PCs but has to be activated 
+to be usable. Open the "Turn Windows features on or off" dialog by searching for it in the windows search
+or open it through your system settings and check the box beside "Microsoft-Message Queue-Server" to activate
+this service on your machine.
+
+You are then set to use MSMQ f.e. in your C# applications by using the System.Messaging library.
+
+\----MSMQ----------------------------------------------------------------------------------------------------/
+
+-> 3 SERVER +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
+
+The Server application listens to the public queue and receives each message from every client sent there. Each 
+client which sends a message is automatically registered on the Server application with its username, given in 
+the sent message object. To initialize a queue, the following Code is necessary and is also called in the Send()
+method, when sending to the clients private queues.
+
+MessageQueue publicQueue = null;
+if (MessageQueue.Exists(path))
+{
+    publicQueue = new MessageQueue(path);
+    publicQueue.Label = description;
+}
+else
+{
+    MessageQueue.Create(path);
+    publicQueue = new MessageQueue(path);
+    publicQueue.Label = description;
+}
+
+For receiving messages of the Contracts.MessageObjects type, a Formatter has to be set, which gets the 
+new class type. The message body is to be cast after receiving to get the actual object. When sending, the 
+class objects are automatically serialized.
+
+publicQueue.Formatter = new XmlMessageFormatter(new Type[]
+                    {typeof(MessageObject)});
+Message msg = publicQueue.Receive();
+MessageObject msgObject = (MessageObject)msg.Body;
+
+The type of the message is given with the Command member and the server acts accordingly to it. When 'Shout'
+is set, the server sends the given message to every client (except the sending client) on their private queues.
+Each private queues name is dirrived from the user name given with the first message.
+
+While 'Shout' is published to every client, 'Whisper' gets redirected to only one user, if the user is 
+registered, else the server sends an error message to the sending client, with the command 'System' attached.
+
+The command 'Users' lets the server send a list of all registered users back to the sending client.
+For sending the queue path is derrived from the client name, sending an class object doesn't need any further 
+adjustments.
+
+public enum Command
+{
+    Shout,          //Publish to every user
+    Whisper,        //direct only to one user
+    System,         //error messages from server
+    Users           //Ask (cleint) / return (server) a list of all registered users
+}
+
+When closing the server, Dispose() is called, although it only lets the garbage collector free all queue related
+memory, which it also does, when the destructor of the queue is called. The Purge() command could be called 
+beforehand to clear either or all queues, before the server application stops completly. If not, the queue state 
+stays the same, when only the server application is stopped, and therefore communication can continue without losing 
+any messages (except one which where received but not processed) when the server application is started again.
+The server application also saves all users as long as it is running and also holds their queues. Therefore
+messages stay in the users private queues until they log in again to receive the message as long as the server is 
+running.
+
+finally
+{
+    //publicQueue.Purge();
+    publicQueue.Dispose();
+}
+
+\----SERVER--------------------------------------------------------------------------------------------------/
+
+-> 4 CLIENT +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
+
+The client exists of 3 parts (1) the graphical interface, (2) the code behind and (3) the send/receive logic.
+
+Part 1 is a very simple GUI that requires the user to enter a username before allowing him to send/receive
+messages to/from the server. (MainWindow.xaml)
+
+Part 2 manages the actions and value representations for the controls. (MainWindow.xaml.cs)
+
+Part 3 is about the actual usage of the MSMQ technology (MainWindow.xaml.cs and Logic.cs)
+Many parts of this will already be known form the SERVER section. One part is exclusive to the Client which
+is listening to a queue in an async task using an Eventhandler.
+
+One aspect of it is the initialisation of a queue, setting the formatter and registering an eventhandler followed
+by the call of "BeginReceive" which then triggers the ReceiveCompleted event when a message is received.
+
+  MessageQueue privateQueue = new MessageQueue(queuePath);
+  privateQueue.Formatter = new XmlMessageFormatter(new Type[] {typeof(MessageObject)});
+  privateQueue.ReceiveCompleted += new ReceiveCompletedEventHandler(MsgReceiveCompleted);
+  privateQueue.BeginReceive();
+
+The second one is the event handler itself which uses the received object and processes it corresponding to 
+its content. the essential code parts are getting the queue out of the source, ending the receive and 
+restarting the listening process again.
+
+public void MsgReceiveCompleted(object source, ReceiveCompletedEventArgs asyncResult)
+{
+     MessageQueue mq = (MessageQueue)source;
+     Message m = mq.EndReceive(asyncResult.AsyncResult);
+     // -- process the message here
+     mq.BeginReceive(); // restart the listener
+}
+
+\----CLIENT--------------------------------------------------------------------------------------------------/
+
